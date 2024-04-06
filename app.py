@@ -58,6 +58,9 @@ student_schema = {
 @validate_arguments
 def validate_student(student: dict):
     StudentCreate(**student)
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Library Mangament System api"}
 
 @app.post("/api/students", status_code=201, response_model=StudentResponse)
 async def create_student(student: StudentCreate = Body(...)):
