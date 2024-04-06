@@ -5,7 +5,7 @@ from pymongo import MongoClient, IndexModel, ASCENDING
 from bson import ObjectId
 import pymongo
 import uvicorn
-from pydantic import validate_arguments
+from pydantic import validate_call
 from pymongo.errors import DuplicateKeyError
 import dotenv
 import os
@@ -55,7 +55,7 @@ student_schema = {
     },
     "interests": {"type": "array", "items": {"type": "string"}}
 }
-@validate_arguments
+@validate_call
 def validate_student(student: dict):
     StudentCreate(**student)
 @app.get("/")
