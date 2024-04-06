@@ -24,7 +24,7 @@ students_collection = db["students"]
 # Create index for uniqueness constraint on 'username'
 students_collection.create_indexes([IndexModel([("username", ASCENDING)], unique=True)])
 
-# Pydantic model for request body
+# model for request body
 class StudentCreate(BaseModel):
     full_name: str = ...
     username: str = ...
@@ -32,7 +32,7 @@ class StudentCreate(BaseModel):
     address: dict = ...
     interests: List[str]
 
-# Pydantic model for response body
+# model for response body
 class StudentResponse(BaseModel):
     student_id: str
     full_name: str
@@ -59,7 +59,7 @@ student_schema = {
 def validate_student(student: dict):
     StudentCreate(**student)
 
-@app.post("/students", status_code=201, response_model=StudentResponse)
+@app.post("/api/students", status_code=201, response_model=StudentResponse)
 async def create_student(student: StudentCreate = Body(...)):
     if student.age <= 0:
         raise HTTPException(status_code=400, detail="Age must be greater than 0")
@@ -74,7 +74,7 @@ async def create_student(student: StudentCreate = Body(...)):
     return {"student_id": str(result.inserted_id), **student.dict()}
 
 
-@app.get("/students", response_model=dict)
+@app.get("/api/students", response_model=dict)
 async def list_students(country: Optional[str] = Query(None, description="To apply filter of country."),
                         age: Optional[int] = Query(None, description="Only records which have age greater than equal to the provided age should be present in the result."),
                         interests: Optional[List[str]] = Query(None, description="Filter students by interests.")):
@@ -89,7 +89,7 @@ async def list_students(country: Optional[str] = Query(None, description="To app
     students = list(students_collection.find(query, {"_id": 0}))
     return {"data": students}
 
-@app.get("/students/{id}", response_model=StudentResponse)
+@app.get("/api/students/{id}", response_model=StudentResponse)
 async def get_student(id: str):
     student = students_collection.find_one({"_id": ObjectId(id)})
     if student:
@@ -97,14 +97,14 @@ async def get_student(id: str):
     else:
         raise HTTPException(status_code=404, detail="Student not found")
 
-@app.patch("/students/{id}", status_code=204)
+@app.patch("/api/students/{id}", status_code=204)
 async def update_student(id: str, student: StudentCreate = Body(...)):
     validate_student(student.dict())
     result = students_collection.update_one({"_id": ObjectId(id)}, {"$set": student.dict()})
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Student not found")
 
-@app.delete("/students/{id}")
+@app.delete("/api/students/{id}")
 async def delete_student(id: str):
     result = students_collection.delete_one({"_id": ObjectId(id)})
     if result.deleted_count == 0:
