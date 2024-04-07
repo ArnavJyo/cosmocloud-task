@@ -20,4 +20,4 @@ COPY . /app/
 EXPOSE 8000
 
 # Command to run the FastAPI application
-CMD ["uvicorn", "app:app", "--host", "127.0.0.1", "--port", "8000"]
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
