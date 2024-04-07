@@ -5,7 +5,6 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV MONGODB_CONNECTION_STRING "mongodb+srv://arnavjyotshi:jammutawi@cluster0.jlogh2y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-
 # Set the working directory in the container
 WORKDIR /app
 
